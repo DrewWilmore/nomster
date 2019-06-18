@@ -1,4 +1,5 @@
 class PlacesController < ApplicationController
+  before_action :authentication_user!, only: [:new, :create, :edit]
   before_action :authenticate_user!, only: [:new , :create]
 
   
@@ -21,7 +22,11 @@ class PlacesController < ApplicationController
   end
 
   def edit
-    @place = Place.find(params[:id])
+    @place = Place.find(params[:id])\
+    
+    if @place.user != current_user
+      return render plain: 'not allowed', status: forbidden
+    end
   end
 
   def update
